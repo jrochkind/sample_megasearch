@@ -1,1 +1,28 @@
 @import "bootstrap";
+
+
+/* based on bootstrap thumbnails */
+.bento_box {
+  margin-left: -$gridGutterWidth;
+  @include clearfix();
+
+/* We make it super wide as a hacky way to have horizontal
+   scrolling over our compartments.  Big enough for ten compartments. */  
+  width: (10 * ($gridColumnWidth*4 + $gridGutterWidth));
+}
+
+
+/* based on combination of bootstrap `.thumbnails > li`
+   and `thumbnail` */
+.bento_compartment {
+  display: block;
+  padding: 4px;
+  border: 1px solid #ddd;
+  @include border-radius(4px);
+  @include box-shadow(0 1px 1px rgba(0,0,0,.075));  
+  margin-bottom: $gridGutterWidth;
+}
+
+.bento_layout {
+  margin: ($gridGutterWidth * 2);
+}
