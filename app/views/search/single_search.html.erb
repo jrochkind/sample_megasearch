@@ -1,0 +1,47 @@
+<div class='row'>
+  <h1>Search <%= @engine.configuration.id %> </h1>
+  <p><%= link_to "← Multi-search", multi_search_path(:q => params[:q]) %>
+</div>
+
+<div class="row">
+  <%= form_tag({}, :method=> "get", :class => "form-search form-inline well") do %>
+  
+    Search: <%= search_field_tag 'q', params[:q], :class => "search-query" %>
+    <%= select_tag "field", 
+        options_for_select({"in any field" => nil, "as Title" => "title", "as Author" => "author", "as Subject" => "subject"}, params[:field]) %>
+    <%= button_tag 'search', :type=> 'submit', :class => 'btn btn-primary'  %>
+    
+    <span class="sort_group">
+      <label for="sort">Sorted by</label> <%= select_tag( "sort",
+        options_for_select(
+          bento_sort_hash_for(@engine),
+          params[:sort] || "relevance"
+        )
+        ) %>
+     </span>
+      
+      <span class="per_page_group">
+        <%= select_tag "per_page", options_for_select({"10" => "10", "20" => "20", "50" => "50"}, params[:per_page]) %> 
+        <label for="per_page">per page</label>
+      </span>
+      
+    
+  <% end %>
+</div>
+
+<% if @results %>
+  <div class="row">
+    <% if @results.total_items && @results.total_items > 0 %>
+      <p>Showing  <%= number_with_delimiter @results.pagination.start_record %> through <%= number_with_delimiter @results.pagination.end_record %> of <%= number_with_delimiter @results.pagination.count_records %>  (fetched in <%= "%.3f" % @results.timing %>s)</p>
+    <% end %>
+    
+    <%= paginate @results.pagination %>
+  </div>
+
+  <div class="row">
+  
+    <%= bento_search @results %>
+    
+  </div>
+
+<% end %>

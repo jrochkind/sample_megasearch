@@ -1,0 +1,47 @@
+<div class="hero-unit">
+  <h1> Multi-Search Example </h1>
+  
+  <p>A quick and dirty example of bento_search functionality. <%= link_to 'http://github.com/jrochkind/bento_search' %></p>
+  
+  <%= form_tag({}, :method=> "get", :class => "well form-search") do %>
+  
+    Search: <%= search_field_tag 'q', params[:q], :class => "search-query" %>    
+    <%= button_tag 'search', :type=> 'submit', :class => 'btn btn-primary'  %>
+       
+  <% end %>
+
+</div>
+<ul class="thumbnails">
+
+  <% if @results %>
+  
+    <% @results.each_pair do |key, result| %>
+    <li class="span4">
+      <div class="bento thumbnail">
+        <h2><%= key %> </h2>
+        <dl>
+        <dt>Total hits:</dt><dd><%= result.total_items %><dd>
+        <dt>Response generation time (seconds):</dt><dd><%= result.timing %></dd>
+        </dl>
+        <%= link_to "More of these →", single_search_path(key, :q => params[:q], :field => params[:field]) %>
+        <hr>
+        <%= bento_search result %>
+      </div>
+    </li>
+  
+  <% end %>
+  
+  <% end %>
+  
+  <% if params[:q] && @ajax_engines %>
+    <% @ajax_engines.each do |engine| %>
+      <li class="span4">
+        <div class="thumbnail">
+          <h2><%= engine %></h2>
+          <%= bento_search engine, :query => params[:q], :load => :ajax_auto %>    
+        </div>       
+      </li>
+    <% end %>
+   <% end %>
+  
+</div>

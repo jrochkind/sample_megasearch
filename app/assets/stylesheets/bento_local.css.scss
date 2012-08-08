@@ -1,0 +1,53 @@
+.bento_item_body {
+  padding-left: 2em;
+}
+
+.bento_item_title {
+  margin-bottom: 1em;
+}
+
+.bento_item {
+  padding: 0.5em;
+}
+
+.bento.thumbnail {
+  line-height: inherit;
+}
+
+.bento_search_ajax_wait {
+  text-align: center;
+  margin: 2em;
+}
+
+.bento_item_title b.bento_search_highlight {
+  font-style: italic;
+}
+
+.bento_item_row.published_in .year {
+  font-weight: bold
+}
+
+/* narrower select menus */
+
+#field {
+  width: 120px;
+}
+
+#sort {
+  width: 120px;
+}
+.sort_group {
+  margin-left: 40px;
+}
+  
+#per_page {
+  width: 80px;
+}
+  
+.per_page_group {
+  float: right;
+}
+  
+
+
+
