@@ -1,5 +1,6 @@
-PATH
-  remote: ../bento_search
+GIT
+  remote: git://github.com/jrochkind/bento_search.git
+  revision: 9806c1fa962be081a5d4f319120be21fb7e47b60
   specs:
     bento_search (0.0.1)
       confstruct (>= 0.2.3, < 1.0)
