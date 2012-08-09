@@ -7,7 +7,11 @@
     
     <%= form_tag({}, :method=> "get", :class => "well form-search") do %>
     
-      Search: <%= search_field_tag 'q', params[:q], :class => "search-query" %>    
+      Search: <%= search_field_tag 'q', params[:q], :class => "search-query" %> 
+      
+          <%= select_tag "field", 
+        options_for_select({"in any field" => nil, "as Title" => "title", "as Author" => "author", "as Subject" => "subject"}, params[:field]) %>
+      
       <%= button_tag 'search', :type=> 'submit', :class => 'btn btn-primary'  %>
          
     <% end %>
