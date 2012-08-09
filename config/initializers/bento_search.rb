@@ -3,7 +3,8 @@ require 'bento_search/openurl_main_link'
 # Global variables with key names of registered engines the 
 # SearchController will use to search. Modify this list if you
 # don't have credentials for some services, or want to use different
-# services
+# services. These global vars aren't part of the bento_search gem, just
+# something this sample app does. 
 $foreground_engines = %w{primo eds ebscohost summon scopus gbs}
 $background_engines = []
 
