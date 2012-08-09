@@ -4,7 +4,7 @@ require 'bento_search/openurl_main_link'
 # SearchController will use to search. Modify this list if you
 # don't have credentials for some services, or want to use different
 # services
-$foreground_engines = %w{primo eds ebscohost scopus summon gbs}
+$foreground_engines = %w{primo eds ebscohost summon scopus gbs}
 $background_engines = []
 
 
@@ -41,7 +41,7 @@ BentoSearch.register_engine("summon") do |conf|
   conf.fixed_params = {
     # These pre-limit the search to avoid certain content-types, you may or may
     # not want to do. 
-    "s.cmd" => ["addFacetValueFilters(ContentType,Web Resource:true,Reference:true,eBook:true,Book Chapter:true,Newspaper Article:true,Trade Publication Article:true,Journal:true,Transcript:true)"],
+    "s.cmd" => ["addFacetValueFilters(ContentType,Web Resource:true,Reference:true,eBook:true,Book Chapter:true,Newspaper Article:true,Trade Publication Article:true,Journal:true,Transcript:true,Research Guide:true)"],
     
     # because our entire demo app is behind auth, we can hard-code that
     # all users are authenticated. 
@@ -102,6 +102,19 @@ BentoSearch.register_engine("eds") do |conf|
     BentoSearch::OpenurlMainLink[:base_url => "http://findit.library.jhu.edu/resolve", :extra_query => "&umlaut.skip_resolve_menu_for_type=fulltext"] ,
     BentoSearch::OpenurlAddOtherLink[:overwrite => true, :base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]    
   ]    
+  
+  # http://support.ebsco.com/knowledge_base/detail.php?id=5382
+  conf.only_source_types = [
+    "Academic Journals",
+    "Magazines",
+    "Reviews",
+    "Reports",
+    "Conference Materials",
+    "Dissertations",
+    "Biographies",
+    "Primary Source Documents",
+    "Music Scores"    
+  ]
 end
 
 
