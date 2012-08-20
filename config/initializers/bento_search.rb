@@ -33,10 +33,11 @@ BentoSearch.register_engine("scopus") do |conf|
 end
 
 BentoSearch.register_engine("summon") do |conf|
-  conf.engine = "BentoSearch::SummonEngine"
-  conf.access_id = ENV["SUMMON_ACCESS_ID"]
+  conf.engine     = "BentoSearch::SummonEngine"
+  conf.access_id  = ENV["SUMMON_ACCESS_ID"]
   conf.secret_key = ENV["SUMMON_SECRET_KEY"]
   
+  conf.lang       = "en"
   
 
   conf.fixed_params = {
@@ -144,7 +145,7 @@ BentoSearch.register_engine("primo") do |conf|
   # exclude certain content-types. unclear if we should use
   # rtype or pfilter facet. 
   conf.fixed_params = {
-    "query_exc" => "facet_pfilter,exact,books,newspaper_articles,websites,reference_entrys,images,media,audio_video"
+    "query_exc" => "facet_pfilter,exact,books,newspaper_articles,websites,reference_entrys,images,media,audio_video,rare_books,book_chapters"
   }
   
   conf.item_decorators = [ 
