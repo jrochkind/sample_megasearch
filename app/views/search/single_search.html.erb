@@ -1,6 +1,6 @@
 <div class='row'>
   <h1>Search <%= @engine.configuration.id %> </h1>
-  <p><%= link_to "← Multi-search", multi_search_path(:q => params[:q]) %>
+  <p><%= link_to "← Multi-search", multi_search_path(:q => params[:q], :field => params[:field]) %>
 </div>
 
 <div class="row">
