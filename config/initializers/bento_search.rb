@@ -5,8 +5,9 @@ require 'bento_search/openurl_main_link'
 # don't have credentials for some services, or want to use different
 # services. These global vars aren't part of the bento_search gem, just
 # something this sample app does. 
-$foreground_engines = %w{primo eds ebscohost summon scopus gbs}
-$background_engines = []
+$foreground_engines = %w{primo eds ebscohost summon scopus}
+$background_engines = %w{gbs}
+$triggered_engines = %w{google_site}
 
 
 
@@ -19,7 +20,51 @@ $background_engines = []
 
 BentoSearch.register_engine("gbs") do |conf|
    conf.engine = "BentoSearch::GoogleBooksEngine"
-   conf.api_key = ENV["GBS_API_KEY"]      
+   conf.api_key = ENV["GBS_API_KEY"]
+   
+   # allow ajax load. 
+   conf.allow_routable_results = true
+   
+   # ajax loaded results with our wrapper template
+   # with total number of hits, link to full results, etc. 
+   conf.for_display do |display|
+     display[:ajax] = {"wrapper_template" => "layouts/bento_box_wrapper"}
+   end
+end
+
+BentoSearch.register_engine("google_site") do |conf|
+   conf.engine = "BentoSearch::GoogleSiteSearchEngine"
+   conf.api_key = ENV["GOOGLE_SITE_SEARCH_KEY"]
+   conf.cx      = ENV["GOOGLE_SITE_SEARCH_CX"]
+   
+   # allow ajax load. 
+   conf.allow_routable_results = true
+   
+   # ajax loaded results with our wrapper template
+   # with total number of hits, link to full results, etc. 
+   conf.for_display do |display|
+     display[:ajax] = {"wrapper_template" => "layouts/bento_box_wrapper"}
+   end
+end
+
+BentoSearch.register_engine("worldcat") do |conf|
+  conf.engine = "BentoSearch::WorldcatSruDcEngine"
+  
+  conf.api_key = ENV["WORLDCAT_API_KEY"]
+  # assume all users are affiliates and have servicelevel=full access. 
+  conf.auth = true
+end
+
+# JH only, hacky demo of Xerxes/Metalib, does not work well, and
+# please don't point at our Xerxes install. 
+BentoSearch.register_engine("jhsearch") do |conf|
+  conf.engine = "BentoSearch::XerxesEngine"
+  conf.base_url = "http://jhsearch.library.jhu.edu"
+  conf.databases = ['JHU04066', 'JHU06614']
+  
+  conf.allow_routable_results = true
+  
+  conf.ajax_load = true
 end
 
 BentoSearch.register_engine("scopus") do |conf|
@@ -44,6 +89,8 @@ BentoSearch.register_engine("summon") do |conf|
     # These pre-limit the search to avoid certain content-types, you may or may
     # not want to do. 
     "s.cmd" => ["addFacetValueFilters(ContentType,Web Resource:true,Reference:true,eBook:true,Book Chapter:true,Newspaper Article:true,Trade Publication Article:true,Journal:true,Transcript:true,Research Guide:true)"],
+    #"s.fvf[]" => ["ContentType,Reference,true"],
+    
     
     # because our entire demo app is behind auth, we can hard-code that
     # all users are authenticated. 
@@ -120,17 +167,7 @@ BentoSearch.register_engine("eds") do |conf|
 end
 
 
-# JH only, hacky demo of Xerxes/Metalib, does not work well, and
-# please don't point at our Xerxes install. 
-BentoSearch.register_engine("jhsearch") do |conf|
-  conf.engine = "BentoSearch::XerxesEngine"
-  conf.base_url = "http://jhsearch.library.jhu.edu"
-  conf.databases = ['JHU04066', 'JHU06614']
-  
-  conf.allow_routable_results = true
-  
-  conf.ajax_load = true
-end
+
 
 BentoSearch.register_engine("primo") do |conf|
   conf.engine       = "BentoSearch::PrimoEngine"

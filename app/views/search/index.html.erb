@@ -28,15 +28,11 @@
     
       <% @results.each_pair do |key, result| %>
         <div class="span4">
-          <div class="bento_compartment">
+          <div class="bento_compartment <%= key %>">             
             <h2><%= key %> </h2>
-            <dl>
-            <dt>Total hits:</dt><dd><%= result.total_items %><dd>
-            <dt>Response generation time (seconds):</dt><dd><%= result.timing %></dd>
-            </dl>
-            <%= link_to "More of these →", single_search_path(key, :q => params[:q], :field => params[:field]) %>
-            <hr>
-            <%= bento_search result %>
+            <%= render :layout => "layouts/bento_box_wrapper", :locals => {:results => result } do %>            
+              <%= bento_search result %>
+            <% end %>
           </div>
         </div>
       
@@ -44,15 +40,27 @@
     
     <% end %>
     
-    <% if params[:q] && @ajax_engines %>
-      <% @ajax_engines.each do |engine| %>
+    <% if params[:q] && @ajax_bg_engines %>
+      <% @ajax_bg_engines.each do |engine| %>
         <div class="span4">
-          <div class="bento_compartment">
+          <div class="bento_compartment <%= engine %>">
             <h2><%= engine %></h2>
             <%= bento_search engine, :query => params[:q], :load => :ajax_auto %>    
           </div>       
         </div>
       <% end %>
+     <% end %>
+     
+     <% if params[:q] && @ajax_triggered_engines %>
+       <% @ajax_triggered_engines.each do |engine| %>
+          <div class="span4">
+            <div class="bento_compartment <%= engine %>">
+              <h2><%= engine %></h2>
+              <%= link_to "Load Results", single_search_path(engine, :q => params[:q], :field => params[:field]), :class => "ajax_load_trigger" %>       
+              <%= bento_search engine, :query => params[:q], :load => :ajax_triggered %>    
+            </div>       
+          </div>
+        <% end %>
      <% end %>
     
   </div>

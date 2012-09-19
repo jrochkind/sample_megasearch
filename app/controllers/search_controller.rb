@@ -1,6 +1,8 @@
 class SearchController < ApplicationController
   @@foreground_engines = $foreground_engines || []
-  @@ajax_engines = $background_engines || []# ["jhsearch"]
+  @@ajax_bg_engines = $background_engines || []
+  @@ajax_triggered_engines = $triggered_engines || []
+  
   @@per_page = 10
   def index
     if params[:q]
@@ -8,7 +10,8 @@ class SearchController < ApplicationController
       searcher.start(params[:q], :per_page => @@per_page, :semantic_search_field => params[:field])
       
       @results = searcher.results
-      @ajax_engines = @@ajax_engines
+      @ajax_bg_engines = @@ajax_bg_engines
+      @ajax_triggered_engines = @@ajax_triggered_engines
     end    
   end
   
