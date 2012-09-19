@@ -26,3 +26,12 @@
 .bento_layout {
   margin: ($gridGutterWidth * 2);
 }
+
+/* Only in Google Site search areas, let's make the citation
+area, which is used in google site for url, styled kinda like google,
+and make sure it wraps. */
+.google_site .published_in {
+  color: $green;
+  word-wrap: break-word;
+}
+

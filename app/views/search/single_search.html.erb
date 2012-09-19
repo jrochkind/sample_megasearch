@@ -38,7 +38,7 @@
     <%= paginate @results.pagination %>
   </div>
 
-  <div class="row">
+  <div class="row <%= @results.engine_id %>">
   
     <%= bento_search @results %>
     
