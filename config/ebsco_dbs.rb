@@ -37,6 +37,11 @@ $ebsco_dbs = []
     $ebsco_dbs.push( 'hsr' )  # Humanities & Social Sciences Index Retrospective: 1907-1984 (H.W. Wilson) ** 
     $ebsco_dbs.push( 'rgr' )  # Readers' Guide Retrospective: 1890-1982 (H.W. Wilson) ** 
 
+    # Include OmniFile, that is a superset of these smaller indexes
+    # that we currently do not have access to. 
+    #$ebsco_dbs.push( 'ofm' )  # Wilson OmniFile 
+
+
     # for reasons we don't know, we lost access to Ed Full Text. 
     # 4 Sep 2012 jrochkind
     #$ebsco_dbs.push( 'eft' )  # Education Full Text (H.W. Wilson) ** 
