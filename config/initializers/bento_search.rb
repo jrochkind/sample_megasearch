@@ -121,6 +121,8 @@ BentoSearch.register_engine("ebscohost") do |conf|
   #conf.databases          = %w{a9h awn 
   #ofm eft gft bft asf aft ijh hft air flh geh ssf hgh rih cja 22h 20h fmh rph jph}
   
+  # note, configured with decorator to link directly to EBSCO native platform
+  # if ebsco says they have fulltext, else openurl. 
   conf.item_decorators = [ 
     BentoSearch::Ebscohost::ConditionalOpenurlMainLink[:base_url => "http://findit.library.jhu.edu/resolve", :extra_query => "&umlaut.skip_resolve_menu_for_type=fulltext"] ,
     BentoSearch::OpenurlAddOtherLink[:base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]    
