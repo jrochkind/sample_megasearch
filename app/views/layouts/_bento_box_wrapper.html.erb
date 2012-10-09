@@ -11,8 +11,6 @@
       This ordinarily is fine, but since we want this layout to work for both, we have to
       look for both, oh well. 
   %>
-  <% require 'debugger'
-     debugger %>
   <%= link_to "More of these →", single_search_path(results.engine_id, :q => params[:q] || params[:query], :field => params[:field]) %>
 <hr>
 
