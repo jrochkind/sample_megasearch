@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.6'
 
-gem "bento_search", :path => "../bento_search"
+gem "bento_search", :github => "jrochkind/bento_search" #:path => "../bento_search"
 gem "kaminari" 
 gem "celluloid"
 gem "debugger"
