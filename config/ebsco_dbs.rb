@@ -5,9 +5,11 @@ $ebsco_dbs = []
     $ebsco_dbs.push( 'ahl' )  # America: History & Life ** 
     $ebsco_dbs.push( 'rfh' )  # ATLA Religion Database with ATLASerials ** 
     $ebsco_dbs.push( 'rzh' )  # CINAHL Plus with Full Text ** 
+    $ebsco_dbs.push( 'cmedm') # Medline 
     $ebsco_dbs.push( 'ufh' )  # Communication & Mass Media Complete ** 
     $ebsco_dbs.push( 'eoh' )  # EconLit with Full Text ** 
     $ebsco_dbs.push( '20h' )  # Educational Administration Abstracts ** 
+    $ebsco_dbs.push( 'eric')  # ERIC 
     $ebsco_dbs.push( 'flh' )  # Family & Society Studies Worldwide ** 
     $ebsco_dbs.push( 'f3h' )  # Film & Television Literature Index with Full Text **  
     $ebsco_dbs.push( 'fmh' )  # Gender Studies Database ** 
