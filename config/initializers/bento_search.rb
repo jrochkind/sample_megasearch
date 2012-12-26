@@ -10,6 +10,37 @@ $background_engines = %w{gbs}
 $triggered_engines = %w{google_site}
 
 
+## Some decorator classes we'll use to change links from results.
+#  Could be defined in seperate files say in ./app/decorators,
+#  but we're defining here for simplicity and transparency,
+#  and becuase they are very short. 
+
+# Leave title link alone, but add our link resolver as extra link.       
+class OpenUrlOtherLinkDecorator < BentoSearch::StandardDecorator
+  include  BentoSearch::OpenurlAddOtherLink[:base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]  
+end
+        
+# Add OpenURL link to both title link and as other_link
+class OpenUrlBothLinksDecorator < BentoSearch::StandardDecorator
+  include BentoSearch::OpenurlMainLink[:base_url => "http://findit.library.jhu.edu/resolve", :extra_query => "&umlaut.skip_resolve_menu_for_type=fulltext"]
+  include BentoSearch::OpenurlAddOtherLink[:base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]  
+end
+
+# title link directly to EBSCO native platform if ebsco says they have 
+# fulltext, else openurl. other_link always openurl. 
+class EbscoHostLinkDecrorator < BentoSearch::StandardDecorator
+  include BentoSearch::Ebscohost::ConditionalOpenurlMainLink[:base_url => "http://findit.library.jhu.edu/resolve", :extra_query => "&umlaut.skip_resolve_menu_for_type=fulltext"]
+  include BentoSearch::OpenurlAddOtherLink[:base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]      
+end
+
+class EdsDecorator < BentoSearch::StandardDecorator
+  include BentoSearch::OnlyPremadeOpenurl 
+  include BentoSearch::OpenurlMainLink[:base_url => "http://findit.library.jhu.edu/resolve", :extra_query => "&umlaut.skip_resolve_menu_for_type=fulltext"]
+  include BentoSearch::OpenurlAddOtherLink[:overwrite => true, :base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]
+end  
+
+
+
 
 # Note all the relevant auth details for each service 
 # are taken from env variables, and will blank for you. 
@@ -28,7 +59,8 @@ BentoSearch.register_engine("gbs") do |conf|
    # ajax loaded results with our wrapper template
    # with total number of hits, link to full results, etc. 
    conf.for_display do |display|
-     display[:ajax] = {"wrapper_template" => "layouts/bento_box_wrapper"}
+     display[:ajax] = {"wrapper_template" => "layouts/bento_box_wrapper"}     
+     display.decorator = "OpenUrlOtherLinkDecorator"     
    end
 end
 
@@ -71,10 +103,9 @@ BentoSearch.register_engine("scopus") do |conf|
   conf.engine = "BentoSearch::ScopusEngine"
   conf.api_key = ENV["SCOPUS_KEY"]
   
-  conf.item_decorators = [ 
-    BentoSearch::OpenurlMainLink[:base_url => "http://findit.library.jhu.edu/resolve", :extra_query => "&umlaut.skip_resolve_menu_for_type=fulltext"] ,
-    BentoSearch::OpenurlAddOtherLink[:base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]    
-  ]  
+  conf.for_display do |display|
+    display.decorator = "OpenUrlBothLinksDecorator"
+  end  
 end
 
 BentoSearch.register_engine("summon") do |conf|
@@ -95,17 +126,10 @@ BentoSearch.register_engine("summon") do |conf|
     # because our entire demo app is behind auth, we can hard-code that
     # all users are authenticated. 
     "s.role" => "authenticated"
-  } 
+  }
   
-  # Barnaby, for your purposes you probably do NOT wnat the conf.item_decorators,
-  # just use the built-in Summon link. Or you could use the AddOtherLink one to
-  # add a link to your link resolver, but leave the MainLink one off, to just
-  # use Summon's ordinary link on title for main link. 
-  conf.item_decorators = [ 
-    BentoSearch::OpenurlMainLink[:base_url => "http://findit.library.jhu.edu/resolve", :extra_query => "&umlaut.skip_resolve_menu_for_type=fulltext"] ,
-    BentoSearch::OpenurlAddOtherLink[:base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]    
-  ]  
-
+  conf.for_display = {:decorator => "OpenUrlBothLinksDecorator"}
+  
 end
 
 require "#{Rails.root}/config/ebsco_dbs.rb"
@@ -121,12 +145,7 @@ BentoSearch.register_engine("ebscohost") do |conf|
   #conf.databases          = %w{a9h awn 
   #ofm eft gft bft asf aft ijh hft air flh geh ssf hgh rih cja 22h 20h fmh rph jph}
   
-  # note, configured with decorator to link directly to EBSCO native platform
-  # if ebsco says they have fulltext, else openurl. 
-  conf.item_decorators = [ 
-    BentoSearch::Ebscohost::ConditionalOpenurlMainLink[:base_url => "http://findit.library.jhu.edu/resolve", :extra_query => "&umlaut.skip_resolve_menu_for_type=fulltext"] ,
-    BentoSearch::OpenurlAddOtherLink[:base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]    
-  ]  
+  conf.for_display = {:decorator => "EbscoHostLinkDecrorator"}
 end
 
 #BentoSearch.register_engine("eds_old_api") do |conf|
@@ -147,12 +166,8 @@ BentoSearch.register_engine("eds") do |conf|
   # If our app protects all access to any eds search functions to registered
   # users, we can just tell the engine to assume end user auth. 
   conf.auth = true
-  
-  conf.item_decorators = [ 
-    BentoSearch::OnlyPremadeOpenurl, 
-    BentoSearch::OpenurlMainLink[:base_url => "http://findit.library.jhu.edu/resolve", :extra_query => "&umlaut.skip_resolve_menu_for_type=fulltext"] ,
-    BentoSearch::OpenurlAddOtherLink[:overwrite => true, :base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]    
-  ]    
+
+  conf.for_display = {:decorator => "EdsDecorator"}  
   
   # http://support.ebsco.com/knowledge_base/detail.php?id=5382
   conf.only_source_types = [
@@ -187,10 +202,8 @@ BentoSearch.register_engine("primo") do |conf|
     "query_exc" => "facet_pfilter,exact,books,newspaper_articles,websites,reference_entrys,images,media,audio_video,rare_books,book_chapters"
   }
   
-  conf.item_decorators = [ 
-    BentoSearch::OpenurlMainLink[:base_url => "http://findit.library.jhu.edu/resolve", :extra_query => "&umlaut.skip_resolve_menu_for_type=fulltext"] ,
-    BentoSearch::OpenurlAddOtherLink[:base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]    
-  ]  
+  conf.for_display = {:decorator => "OpenUrlBothLinksDecorator"}
+      
 end
 
   
