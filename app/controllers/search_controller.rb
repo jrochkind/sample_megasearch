@@ -40,7 +40,9 @@ class SearchController < ApplicationController
   # item exports. 
   #
   # Important this URL is _not_ access control protected, so refworks
-  # can get in!
+  # can get in! Note that we pass in the unique ID in encrypted form,
+  # to make it infeasible to use to download arbitrary ebsco records
+  # even though it's not protected. 
   #
   # Some RefWorks export docs at http://www.refworks.com/DirectExport.htm
   def refworks_callback
@@ -51,7 +53,8 @@ class SearchController < ApplicationController
       return
     end
     
-    item = @engine.get(params[:id].to_s)
+    id = decrypt_bento_id(params[:encrypted_id])
+    item = @engine.get(id)
     unless item    
       render :status => 404
     end

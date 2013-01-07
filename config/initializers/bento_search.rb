@@ -23,7 +23,7 @@ module RefworksExportOtherLink
     return super unless unique_id.present?
     
     # refworks can not reliably do https callbacks, insist on http. 
-    callback_url = _h.refworks_callback_url(self.engine_id, unique_id, :ris, :protocol => "http")
+    callback_url = _h.refworks_callback_url(self.engine_id, _h.encrypt_bento_id(unique_id), :ris, :protocol => "http")
     
     refworks_url = "http://www.refworks.com/express/expressimport.asp?"
     refworks_url += "vendor=#{CGI.escape 'bento_search megasearch demo'}&"

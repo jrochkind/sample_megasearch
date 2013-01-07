@@ -55,8 +55,9 @@ SampleMegasearch::Application.routes.draw do
   
   # for refworks export callback url. Generate URL using
   # route helper like:
-  # refworks_callback_url("engine_name", unique_id, :ris)
-  get "refworks_callback/:engine/:id", :to => "search#refworks_callback", :as => "refworks_callback"
+  # refworks_callback_url("engine_name", encrypt_bento_id(unique_id), :ris)
+  get "refworks_callback/:engine/:encrypted_id", :to => "search#refworks_callback", :as => "refworks_callback" 
+
 
   # See how all your routes lay out with "rake routes"
 
