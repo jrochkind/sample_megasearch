@@ -52,6 +52,11 @@ SampleMegasearch::Application.routes.draw do
   # just remember to delete public/index.html.
   root :to => 'search#index', :as => "multi_search"
   match "search/:engine", :to => "search#single_search", :as => "single_search" 
+  
+  # for refworks export callback url. Generate URL using
+  # route helper like:
+  # refworks_callback_url("engine_name", unique_id, :ris)
+  get "refworks_callback/:engine/:id", :to => "search#refworks_callback", :as => "refworks_callback"
 
   # See how all your routes lay out with "rake routes"
 

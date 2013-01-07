@@ -5,7 +5,7 @@ require 'bento_search/openurl_main_link'
 # don't have credentials for some services, or want to use different
 # services. These global vars aren't part of the bento_search gem, just
 # something this sample app does. 
-$foreground_engines = %w{primo eds ebscohost summon scopus}
+$foreground_engines = %w{primo eds ebscohost summon scopus worldcat}
 $background_engines = %w{gbs}
 $triggered_engines = %w{google_site}
 
@@ -14,6 +14,40 @@ $triggered_engines = %w{google_site}
 #  Could be defined in seperate files say in ./app/decorators,
 #  but we're defining here for simplicity and transparency,
 #  and becuase they are very short. 
+
+# Only apply this module to decorators for engines that support
+# get(unique_id) lookups, that's the only way it will work. 
+module RefworksExportOtherLink
+  
+  def other_links
+    return super unless unique_id.present?
+    
+    # refworks can not reliably do https callbacks, insist on http. 
+    callback_url = _h.refworks_callback_url(self.engine_id, unique_id, :ris, :protocol => "http")
+    
+    refworks_url = "http://www.refworks.com/express/expressimport.asp?"
+    refworks_url += "vendor=#{CGI.escape 'bento_search megasearch demo'}&"
+    refworks_url += "filter=RIS%20Format&"    
+    refworks_url += "url=#{CGI.escape callback_url}&"
+    refworks_url += "encoding=65001" # UTF-8
+    
+    super + [
+      BentoSearch::Link.new(
+        :label => "Export to Refworks",
+        :url => refworks_url,
+        # RefWorks target NEEDS to be literally 'RefWorksMain', if you
+        # want to keep targetting the same window, Refworks JS will change
+        # it's window name to that. 
+        :target => "RefWorksMain"
+      )
+    ]
+  end  
+end
+
+class RefworksAndOpenUrlLinkDecorator < BentoSearch::StandardDecorator
+  include  RefworksExportOtherLink
+  include  BentoSearch::OpenurlAddOtherLink[:base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]
+end
 
 # Leave title link alone, but add our link resolver as extra link.       
 class OpenUrlOtherLinkDecorator < BentoSearch::StandardDecorator
@@ -30,6 +64,7 @@ end
 # fulltext, else openurl. other_link always openurl. 
 class EbscoHostLinkDecrorator < BentoSearch::StandardDecorator
   include BentoSearch::Ebscohost::ConditionalOpenurlMainLink[:base_url => "http://findit.library.jhu.edu/resolve", :extra_query => "&umlaut.skip_resolve_menu_for_type=fulltext"]
+  include RefworksExportOtherLink
   include BentoSearch::OpenurlAddOtherLink[:base_url => "http://findit.library.jhu.edu/resolve", :link_name => "Find It @ JH"]      
 end
 
@@ -60,7 +95,7 @@ BentoSearch.register_engine("gbs") do |conf|
    # with total number of hits, link to full results, etc. 
    conf.for_display do |display|
      display[:ajax] = {"wrapper_template" => "layouts/bento_box_wrapper"}     
-     display.decorator = "OpenUrlOtherLinkDecorator"     
+     display.decorator = "RefworksAndOpenUrlLinkDecorator"     
    end
 end
 
@@ -85,6 +120,10 @@ BentoSearch.register_engine("worldcat") do |conf|
   conf.api_key = ENV["WORLDCAT_API_KEY"]
   # assume all users are affiliates and have servicelevel=full access. 
   conf.auth = true
+  
+  conf.for_display do |display|          
+     display.decorator = "RefworksAndOpenUrlLinkDecorator"     
+  end
 end
 
 # JH only, hacky demo of Xerxes/Metalib, does not work well, and
@@ -127,8 +166,8 @@ BentoSearch.register_engine("summon") do |conf|
     # all users are authenticated. 
     "s.role" => "authenticated"
   }
-  
-  conf.for_display = {:decorator => "OpenUrlBothLinksDecorator"}
+    
+  conf.for_display = {:decorator => "RefworksAndOpenUrlLinkDecorator"}
   
 end
 
