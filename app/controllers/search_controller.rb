@@ -34,6 +34,11 @@ class SearchController < ApplicationController
       
       @results = @engine.search(params[:q], args)
     end
+    
+    respond_to do |format|
+      format.html
+      format.atom { render :template => "bento_search/atom_results", :locals => {:atom_results => @results} }
+    end
   end
   
   # Action used in URLs given to refworks as callback for single
