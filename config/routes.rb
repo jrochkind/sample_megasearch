@@ -50,6 +50,10 @@ SampleMegasearch::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
+  root :to => 'search#index'
+  # we want helper methods for multi_search_path and multi_search_url
+  # too, without removing root_url and root_path helpers. oddly, repeating
+  # root seems to work. 
   root :to => 'search#index', :as => "multi_search"
   match "search/:engine", :to => "search#single_search", :as => "single_search" 
   
