@@ -24,6 +24,19 @@
   
   <div class="bento_box row">
   
+  
+    <% if params[:q] && @ajax_bg_engines %>
+      <% @ajax_bg_engines.each do |engine| %>
+        <div class="span4">
+          <div class="bento_compartment <%= engine %>">
+            <h2><%= engine %></h2>
+            <%= bento_search engine, :query => params[:q], :load => :ajax_auto %>    
+          </div>       
+        </div>
+      <% end %>
+     <% end %>
+  
+  
     <% if @results %>
     
       <% @results.each_pair do |key, result| %>
@@ -40,16 +53,7 @@
     
     <% end %>
     
-    <% if params[:q] && @ajax_bg_engines %>
-      <% @ajax_bg_engines.each do |engine| %>
-        <div class="span4">
-          <div class="bento_compartment <%= engine %>">
-            <h2><%= engine %></h2>
-            <%= bento_search engine, :query => params[:q], :load => :ajax_auto %>    
-          </div>       
-        </div>
-      <% end %>
-     <% end %>
+
      
      <% if params[:q] && @ajax_triggered_engines %>
        <% @ajax_triggered_engines.each do |engine| %>
