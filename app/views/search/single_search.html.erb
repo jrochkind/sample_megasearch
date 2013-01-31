@@ -31,6 +31,12 @@
 
 <% if @results %>
   <div class="row">
+    <p>
+      <%= link_to url_for(params.merge(:format => "atom")) do %>
+        <%= image_tag("feed_28_28.png") %> Yep, atom results.
+      <% end %>
+    </p>
+  
     <% if @results.total_items && @results.total_items > 0 %>
       <p>Showing  <%= number_with_delimiter @results.pagination.start_record %> through <%= number_with_delimiter @results.pagination.end_record %> of <%= number_with_delimiter @results.pagination.count_records %>  (fetched in <%= "%.3f" % @results.timing %>s)</p>
     <% end %>
