@@ -11,7 +11,7 @@ $triggered_engines = %w{google_site}
 
 
 ## Some decorator classes we'll use to change links from results.
-#  Could be defined in seperate files say in ./app/decorators,
+#  Could and would often be defined in seperate files say in ./app/decorators,
 #  but we're defining here for simplicity and transparency,
 #  and becuase they are very short. 
 
