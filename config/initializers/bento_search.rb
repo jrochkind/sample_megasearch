@@ -158,8 +158,7 @@ BentoSearch.register_engine("summon") do |conf|
   conf.fixed_params = {
     # These pre-limit the search to avoid certain content-types, you may or may
     # not want to do. 
-    "s.cmd" => ["addFacetValueFilters(ContentType,Web Resource:true,Reference:true,eBook:true,Book Chapter:true,Newspaper Article:true,Trade Publication Article:true,Journal:true,Transcript:true,Research Guide:true)"],
-    #"s.fvf[]" => ["ContentType,Reference,true"],
+    "s.fvf" => ["ContentType,Web Resource,true", "ContentType,Reference,true","ContentType,eBook,true", "ContentType,Book Chapter,true", "ContentType,Newspaper Article,true", "ContentType,Trade Publication Article,true", "ContentType,Journal,true","ContentType,Transcript,true","ContentType,Research Guide,true"],
     
     
     # because our entire demo app is behind auth, we can hard-code that
