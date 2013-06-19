@@ -1,8 +1,8 @@
 GIT
   remote: git://github.com/jrochkind/bento_search.git
-  revision: 543ef221b73d4d6ffd7bee7cb9939009b18765c2
+  revision: f286385b05a4dd7be35345f842f0fec379e9f47d
   specs:
-    bento_search (1.0.4)
+    bento_search (1.0.6)
       confstruct (>= 0.2.3, < 1.0)
       htmlentities
       httpclient (>= 2.2.5, < 3.0.0)
